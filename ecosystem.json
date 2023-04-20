@@ -1,0 +1,22 @@
+{
+  "apps": [
+    {
+      "name": "ProlificCloud-backend",
+      "script": "./src/server.js",
+      "watch": true,
+      "exec_mode": "fork_mode"
+    }
+  ],
+  "deploy": {
+    "production": {
+      "user": "demo",
+      "host": ["165.232.184.65"],
+      "ref": "origin/main",
+      "repo": "https://gitlab.com/amitksinsinwar/pc-api.git",
+      "path": "/home/demo/",
+      "pre-deploy-local" : "scp .env demo@165.232.184.65:current/",
+      "post-deploy": "npm install; pm2 restart ecosystem.json --env production",
+      "ssh_options": ["StrictHostKeyChecking=no", "PasswordAuthentication=no"]
+    }
+  }
+}

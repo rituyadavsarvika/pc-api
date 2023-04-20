@@ -1,0 +1,46 @@
+
+image: node
+
+#build:
+#  script:
+#    - echo $env
+#    - cat $env
+
+
+
+
+
+#build:
+#  image: node
+#  script:
+#    - npm install --no-aduit
+#  artifacts:
+#    paths:
+#      - node_modules/
+#
+#deploy:
+#  script:
+#    - ssh  -o StrictHostKeyChecking=no prolific@192.168.205.53 \
+#      '
+#      rm -rf pc-be-service;
+#      git clone https://deploy:3ku9UfDDnU6TGWgpXa6x@git.prolificlogic.com/prolific-cloud/backend/pc-be-service.git;
+#      '
+#  needs:
+#    - build
+#  environment:
+#    name: production
+#    url: 'https://test.example.com'
+#
+deploy_production:
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - npm i -g pm2
+    - cat $env > .env
+  environment:
+    name: production
+    url: http://test.example.com
+  script:
+    - pm2 -v
+    - pm2 deploy ecosystem.json production setup 2>&1 || true
+    - pm2 deploy ecosystem.json production --force
