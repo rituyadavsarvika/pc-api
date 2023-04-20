@@ -1,3 +1,4 @@
+[![Quality Gate Status](http://122.176.92.25:9000/api/project_badges/measure?project=pc-api&metric=alert_status&token=sqb_c20db2ab9ed88c75db32be8a70a9aa2e183687fd)](http://122.176.92.25:9000/dashboard?id=pc-api)
 # Step by step procedure to setup prolificcloud.com backend in **Production/Staging**
 
 ## Dependency for this project
