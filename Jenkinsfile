@@ -63,11 +63,8 @@ pipeline {
                     ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} '
                     cd ${DEPLOY_PATH} &&
                     npm install &&
-                    ls -l &&
-                    pm2 delete ${APP_NAME} || true &&
                     pm2 start src/app.js --name ${APP_NAME} &&
                     pm2 save &&
-                    pm2 startup'
                 """
             }
         }
