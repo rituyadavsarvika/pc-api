@@ -6,6 +6,7 @@ pipeline {
         DEPLOY_USER = "ubuntu" 
         DEPLOY_PATH = "/var/www/sample-node-project" 
         CREDENTIAL_ID = "app-server-ssh-key" 
+        APP_NAME = "sample-node-app"
     }
 
     stages {
