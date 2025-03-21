@@ -58,18 +58,25 @@ pipeline {
     steps {
         script {
             echo "Starting application with PM2..."
-            sshagent([CREDENTIAL_ID]) {
+            sshagent(['YOUR_SSH_CREDENTIAL_ID']) {
                 sh """
                     ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} '
                     cd ${DEPLOY_PATH} &&
                     npm install &&
-                    pm2 start src/app.js --name ${APP_NAME} &&
+                    if pm2 list | grep -q ${APP_NAME}; then
+                        echo "🔄 Restarting existing PM2 process..."
+                        pm2 restart ${APP_NAME}
+                    else
+                        echo "🚀 Starting new PM2 process..."
+                        pm2 start src/app.js --name ${APP_NAME}
+                    fi &&
                     pm2 save'
                 """
             }
         }
     }
 }
+
 
  }
 
