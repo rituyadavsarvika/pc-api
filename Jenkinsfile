@@ -64,7 +64,7 @@ pipeline {
                     cd ${DEPLOY_PATH} &&
                     npm install &&
                     pm2 start src/app.js --name ${APP_NAME} &&
-                    pm2 save &&
+                    pm2 save'
                 """
             }
         }
