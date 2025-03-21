@@ -21,9 +21,16 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                nodejs('nodejs18') {
-                    echo "Building Code"
-                    sh 'npm run build'
+                script {
+                    echo "Checking if build script exists..."
+                    def hasBuildScript = sh(script: "jq -r '.scripts.build // empty' package.json", returnStdout: true).trim()
+                    
+                    if (hasBuildScript) {
+                        echo "Running npm build..."
+                        sh 'npm run build'
+                    } else {
+                        echo "No build script found, skipping build step."
+                    }
                 }
             }
         }
