@@ -49,7 +49,7 @@ pipeline {
                             nvm install v18.20.7
                             npm install && 
                             pm2 restart ${APP_NAME} ||  pm2 start src/app.js --name ${APP_NAME} &&
-                            pm2 save'
+                            pm2 save
                             '  
                         """
                         
