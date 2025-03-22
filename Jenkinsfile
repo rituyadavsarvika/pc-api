@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         DEPLOY_SERVER = "10.247.109.112"  
-        DEPLOY_USER = "ubuntu" 
+        DEPLOY_USER = "app" 
         DEPLOY_PATH = "/var/www/sample-node-project" 
-        CREDENTIAL_ID = "app-server-ssh-key" 
+        CREDENTIAL_ID = "app-server-app-user-ssh-key" 
         APP_NAME = "sample-node-app"
     }
 
@@ -40,38 +40,23 @@ pipeline {
                 script {
                     echo "Deploying application to EC2..."
                     sshagent([CREDENTIAL_ID]) {
+                        sh "scp -r * ${DEPLOY_USER}@${DEPLOY_SERVER}:${DEPLOY_PATH}/"
                         sh """
                             ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} '
-                            sudo apt update &&
-                            sudo apt install -y nodejs npm &&
-                            sudo npm install -g pm2 &&
-                            mkdir -p ${DEPLOY_PATH} &&
-                            rm -rf ${DEPLOY_PATH}/*'
+                            cd ${DEPLOY_PATH}
+                            export NVM_DIR=~/.nvm &&
+                            source ~/.nvm/nvm.sh
+                            nvm install v18.20.7
+                            npm install && 
+                            pm2 restart ${APP_NAME} ||  pm2 start src/app.js --name ${APP_NAME} &&
+                            pm2 save'
+                            '  
                         """
-                        sh "scp -r * ${DEPLOY_USER}@${DEPLOY_SERVER}:${DEPLOY_PATH}/"
+                        
                     }
                 }
             }
         }
-
-        stage('Start Application with PM2') {
-    steps {
-        script {
-            echo "Starting application with PM2..."
-            sshagent(['YOUR_SSH_CREDENTIAL_ID']) {
-                sh """
-                    ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} '
-                    cd ${DEPLOY_PATH} &&
-                    export NVM_DIR=~/.nvm &&
-                    source ~/.nvm/nvm.sh
-                    nvm install v18.20.7
-                    npm install && 
-                    pm2 restart ${APP_NAME} ||  pm2 start src/app.js --name ${APP_NAME} &&
-                    pm2 save'
-                """
-            }
-        }
-    }
 }
 
 
