@@ -62,14 +62,11 @@ pipeline {
                 sh """
                     ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} '
                     cd ${DEPLOY_PATH} &&
-                    npm install &&
-                    if pm2 list | grep -q ${APP_NAME}; then
-                        echo "🔄 Restarting existing PM2 process..."
-                        pm2 restart ${APP_NAME}
-                    else
-                        echo "🚀 Starting new PM2 process..."
-                        pm2 start src/app.js --name ${APP_NAME}
-                    fi &&
+                    export NVM_DIR=~/.nvm &&
+                    source ~/.nvm/nvm.sh
+                    nvm install v18.20.7
+                    npm install && 
+                    pm2 restart ${APP_NAME} ||  pm2 start src/app.js --name ${APP_NAME} &&
                     pm2 save'
                 """
             }
