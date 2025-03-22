@@ -48,6 +48,7 @@ pipeline {
                             source ~/.nvm/nvm.sh
                             nvm install v18.20.7
                             npm install && 
+                            npm install -g pm2 &&
                             pm2 restart ${APP_NAME} ||  pm2 start src/app.js --name ${APP_NAME} &&
                             pm2 save
                             '  
